@@ -61,7 +61,6 @@ public class Main {
 		drugListPanel.add(drugPanel);
 		mFrame.getContentPane().add(BorderLayout.AFTER_LINE_ENDS, drugListPanel);
 
-		
 
 		//Creating the MenuBar and adding components
 		JMenuBar menuBar = new JMenuBar();
@@ -238,9 +237,18 @@ public class Main {
 					int confirmSearchClient = searchClientConfirm.showConfirmDialog(null, "Do you want to Confirm","Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 					if (confirmSearchClient == 0) {
-						for (Client c : clientArrayList) {					
+						for (Client c : clientArrayList) {
 
-							if (c.getSocialNb().equals(searchClientField.getText())) {
+							if (c.socialNb.equals(searchClientField.getText())) {
+								drugListPanel.setVisible(false);
+								
+								JPanel searchClientPanel = new JPanel();
+								searchClientPanel.setLayout(new BoxLayout(searchClientPanel, BoxLayout.Y_AXIS));
+								JLabel searchClientTitle = new JLabel("Search Client result");
+								searchClientTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+								
+								
+								
 								
 							}
 						}
@@ -262,7 +270,6 @@ public class Main {
 
 
 		//Adding elements to the main frame
-		
 		mFrame.getContentPane().add(BorderLayout.PAGE_START, menuBar);
 
 		// Show Frame
