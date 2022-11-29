@@ -226,7 +226,7 @@ public class Main {
 				
 				JTextField searchClientField = new JTextField (20);
 				
-				searchClientDialogPanel.add(new JLabel("Enter the social number of the "));
+				searchClientDialogPanel.add(new JLabel("Enter the social number of the CLient "));
 				searchClientDialogPanel.add(searchClientField);
 				
 				int result = JOptionPane.showConfirmDialog(mFrame, searchClientDialogPanel, "Provide Drug info", JOptionPane.OK_CANCEL_OPTION);
@@ -240,14 +240,15 @@ public class Main {
 						for (Client c : clientArrayList) {
 
 							if (c.socialNb.equals(searchClientField.getText())) {
+								
 								drugListPanel.setVisible(false);
 								
-								JPanel searchClientPanel = new JPanel();
-								searchClientPanel.setLayout(new BoxLayout(searchClientPanel, BoxLayout.Y_AXIS));
-								JLabel searchClientTitle = new JLabel("Search Client result");
-								searchClientTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+								setSearchClientPanel(clientArrayList, c , mFrame, drugListPanel);
 								
-								
+								mFrame.revalidate();
+						        mFrame.repaint();
+						        return;
+
 								
 								
 							}
@@ -267,6 +268,55 @@ public class Main {
 		});
 
 
+menuItem22.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Search client button action
+				JPanel searchDrugDialogPanel = new JPanel();
+				searchDrugDialogPanel.setLayout( new BoxLayout(searchDrugDialogPanel, BoxLayout.Y_AXIS));
+				
+				JTextField searchDrugField = new JTextField (20);
+				
+				searchDrugDialogPanel.add(new JLabel("Enter the reference of the drug:  "));
+				searchDrugDialogPanel.add(searchDrugField);
+				
+				int result = JOptionPane.showConfirmDialog(mFrame, searchDrugDialogPanel, "Provide Drug info", JOptionPane.OK_CANCEL_OPTION);
+
+				if (result == JOptionPane.OK_OPTION) {
+
+					JOptionPane searchDrugConfirm = new JOptionPane();
+					int confirmSearchDrug = searchDrugConfirm.showConfirmDialog(null, "Do you want to Confirm","Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+					if (confirmSearchDrug == 0) {
+						for (Drug d : drugArrayList) {
+
+							if (d.ref.equals(searchDrugField.getText())) {
+								
+								clientListPanel.setVisible(false);
+								setSearchDrugPanel(drugArrayList, d , mFrame, clientListPanel);
+								
+								
+								
+							}
+						}
+					}
+
+					else if (confirmSearchDrug == 1) {
+						searchDrugConfirm.getRootFrame().dispose();
+					}
+
+					else {
+						searchDrugConfirm.getRootFrame().dispose();
+					}
+
+				}
+			}
+		});
+
+
+
+
 
 
 		//Adding elements to the main frame
@@ -279,23 +329,97 @@ public class Main {
 	/*
 	 * Functions
 	 */
-		public static void buildGradePanel(ArrayList<Client> clientList) {
+	
+	public static void setSearchClientPanel(ArrayList<Client> clientArrayList, Client c , JFrame mFrame, JPanel drugListPanel) {
+		
+		if (!clientArrayList.isEmpty()) {
 			
-			if (!clientList.isEmpty()) {
-				JPanel clientInfoPanel = new JPanel();
-				JPanel Panel = new JPanel();
+			JPanel searchClientPanel = new JPanel();
+			searchClientPanel.setLayout(new BoxLayout(searchClientPanel, BoxLayout.Y_AXIS));
+
+			JLabel searchClientTitle = new JLabel("Search Client result: \n");
+			searchClientTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+			
+			JLabel nameLabel = new JLabel("Client name: "+c.firstName+" "+ c.lastName+"\n");
+			//JLabel lnameLabel = new JLabel(c.lastName);
+			JLabel socialLabel = new JLabel("Social Security Number: "+c.socialNb+"\n");
+			JLabel phoneLabel = new JLabel("Client's Phone Number: "+c.phoneNb+"\n");
+			JLabel addrLabel = new JLabel("Client's address: "+c.address+"\n");
+			
+			
+			JButton returnButton = new JButton("Return to Menu");
 				
-				JLabel clientNameLabel = new JLabel("Client name ");
-				JLabel averageValue = new JLabel();
-				JLabel validateLabel = new JLabel("Did student validate the semester: ");
-				JLabel validateValue = new JLabel();
-				
-				
+			returnButton.addActionListener(new ActionListener(){
+		        
+				public void actionPerformed(ActionEvent e){
+		        	searchClientPanel.setVisible(false);
+		        	drugListPanel.setVisible(true);
+		        	}
+		        });
+
+
+			searchClientPanel.add(searchClientTitle);
+			searchClientPanel.add(nameLabel);
+			searchClientPanel.add(addrLabel);
+			searchClientPanel.add(socialLabel);
+			searchClientPanel.add(phoneLabel);
+			searchClientPanel.add(addrLabel);
+			searchClientPanel.add(returnButton);
+			
+			mFrame.add(searchClientPanel);
+			
+			searchClientPanel.setVisible(true);
+
+			searchClientPanel.repaint();
+			return;
+		}
+			
 			}
+		
+
+
+
+public static void setSearchDrugPanel(ArrayList<Drug> drugArrayList, Drug d , JFrame mFrame, JPanel clientListPanel) {
+	
+	//if (!clientArrayList.isEmpty()) {
+		JPanel searchDrugPanel = new JPanel();
+		searchDrugPanel.setLayout(new BoxLayout(searchDrugPanel, BoxLayout.Y_AXIS));
+		JLabel searchDrugTitle = new JLabel("Search Drug result: \n");
+		searchDrugTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+		
+		JLabel refLabel = new JLabel("Drug Reference: "+d.ref+"\n");
+		JLabel wordingLabel = new JLabel("Drug Label: "+d.wording+"\n");
+		JLabel descriptLabel = new JLabel("Drug Description "+d.descript+"\n");
+		JLabel quantityLabel = new JLabel("Quantity of Drug in Stock: "+d.quantity+"\n");
+		JLabel priceLabel = new JLabel("Price of the Drug: "+d.price+"\n");
+		
+		
+		JButton returnButton = new JButton("Return to Menu");
+			
+		returnButton.addActionListener(new ActionListener(){
+	        
+			public void actionPerformed(ActionEvent e){
+	        	searchDrugPanel.setVisible(false);
+	        	clientListPanel.setVisible(true);
+	        	}
+	        });
+
+
+		searchDrugPanel.add(searchDrugTitle);
+		searchDrugPanel.add(refLabel);
+		searchDrugPanel.add(wordingLabel);
+		searchDrugPanel.add(descriptLabel);
+		searchDrugPanel.add(quantityLabel);
+		searchDrugPanel.add(priceLabel);
+		searchDrugPanel.add(returnButton);
+		
+		mFrame.add(searchDrugPanel);
+		
+		searchDrugPanel.setVisible(true);
+		
 		}
 
-	// Add Client
-
+}
 
 
 	//Truc de Jeanne qui sert à rien pcq Côme l'a fait au dessus
@@ -321,4 +445,4 @@ public class Main {
 
 
 
-}
+
