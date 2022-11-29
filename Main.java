@@ -39,7 +39,8 @@ public class Main {
 		JScrollPane clientPanel = new JScrollPane(clientTable);
 
 		clientListPanel.add(clientListTitle);
-		clientListPanel.add(clientPanel);		
+		clientListPanel.add(clientPanel);	
+		mFrame.getContentPane().add(BorderLayout.LINE_START, clientListPanel);
 
 
 		//drug table view
@@ -58,6 +59,9 @@ public class Main {
 
 		drugListPanel.add(drugListTitle);
 		drugListPanel.add(drugPanel);
+		mFrame.getContentPane().add(BorderLayout.AFTER_LINE_ENDS, drugListPanel);
+
+		
 
 		//Creating the MenuBar and adding components
 		JMenuBar menuBar = new JMenuBar();
@@ -258,8 +262,7 @@ public class Main {
 
 
 		//Adding elements to the main frame
-		mFrame.getContentPane().add(BorderLayout.LINE_START, clientListPanel);
-		mFrame.getContentPane().add(BorderLayout.AFTER_LINE_ENDS, drugListPanel);
+		
 		mFrame.getContentPane().add(BorderLayout.PAGE_START, menuBar);
 
 		// Show Frame
