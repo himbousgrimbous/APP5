@@ -25,7 +25,7 @@ public class Main {
 		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mFrame.setBounds(0,0,950,600);
 
-		// client table views
+		// Client table views
 		JPanel clientListPanel = new JPanel();
 		clientListPanel.setLayout(new BoxLayout(clientListPanel, BoxLayout.Y_AXIS));
 		JLabel clientListTitle = new JLabel("Client list");
@@ -75,10 +75,10 @@ public class Main {
 		menu2.add(menuItem21);
 		menu2.add(menuItem22);
 
-		// Add Subject show dialog button
+		// Add Drug show dialog button
 		menuItem11.addActionListener(new ActionListener() {	
 
-			//creating subject button
+			//creating drug button
 			public void actionPerformed(ActionEvent e) {
 
 				JPanel addClientDialogPanel = new JPanel();
@@ -226,6 +226,31 @@ public class Main {
 				searchClientDialogPanel.add(new JLabel("Enter the social number of the "));
 				searchClientDialogPanel.add(searchClientField);
 				
+				int result = JOptionPane.showConfirmDialog(mFrame, searchClientDialogPanel, "Provide Drug info", JOptionPane.OK_CANCEL_OPTION);
+
+				if (result == JOptionPane.OK_OPTION) {
+
+					JOptionPane searchClientConfirm = new JOptionPane();
+					int confirmSearchClient = searchClientConfirm.showConfirmDialog(null, "Do you want to Confirm","Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+					if (confirmSearchClient == 0) {
+						for (Client c : clientArrayList) {					
+
+							if (c.getSocialNb().equals(searchClientField.getText())) {
+								
+							}
+						}
+					}
+
+					else if (confirmSearchClient == 1) {
+						searchClientConfirm.getRootFrame().dispose();
+					}
+
+					else {
+						searchClientConfirm.getRootFrame().dispose();
+					}
+
+				}
 			}
 		});
 
@@ -241,7 +266,23 @@ public class Main {
 		mFrame.setVisible(true);
 
 	}
-
+	/*
+	 * Functions
+	 */
+		public static void buildGradePanel(ArrayList<Client> clientList) {
+			
+			if (!clientList.isEmpty()) {
+				JPanel clientInfoPanel = new JPanel();
+				JPanel Panel = new JPanel();
+				
+				JLabel clientNameLabel = new JLabel("Client name ");
+				JLabel averageValue = new JLabel();
+				JLabel validateLabel = new JLabel("Did student validate the semester: ");
+				JLabel validateValue = new JLabel();
+				
+				
+			}
+		}
 
 	// Add Client
 
@@ -267,5 +308,7 @@ public class Main {
 	//addStudentDialogPanel.add(new JLabel("Telephone Number:"));
 	//addStudentDialogPanel.add(TelephoneNumberField);
 	//addStudentDialogPanel.add(Box.creatHorizontalStrut(15));
+
+
 
 }
