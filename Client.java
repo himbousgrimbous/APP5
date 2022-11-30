@@ -11,7 +11,15 @@ public class Client {
 	    public String phoneNb;
 	    public String address;
 	    public ArrayList<Drug> medicineList;
-	    public Client(String socialNb, String firstName, String lastName, String phoneNb, String address) throws Exception {
+	    public String clientDisplayInfos() {
+        	return ("Client's social number: "+ this.socialNb +
+        		"\nClient's name: "+ this.lastName+ " "+this.firstName+
+                "\nClient's phone number: "+this.phoneNb+
+                "\nClient's address: "+this.address+
+                "\nClient's purchases: "+this.medicineList);
+   		}
+
+		public Client(String socialNb, String firstName, String lastName, String phoneNb, String address) throws Exception {
 	        if (socialNb.length() < 13) {
 	            throw new Exception("The social number is too short !");
 	        }
