@@ -19,7 +19,15 @@ public class Main {
 
 		ArrayList<Client> clientArrayList = new ArrayList<>();
 		ArrayList<Drug> drugArrayList = new ArrayList<>();
-
+		
+		try {
+			clientArrayList.add(new Client("12345678912345","Côme","Meyer","0768980920","11 rue Claude Debussy"));
+			drugArrayList.add(new Drug("1","Aspirine","Maux de Tête",100,1.5f));
+			} catch (Exception e) {
+			}
+		
+		
+		
 		// Set up Frame
 		JFrame mFrame = new JFrame("Pharmacy Management");
 		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,17 +74,24 @@ public class Main {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu1 = new JMenu("Add");
 		JMenu menu2 = new JMenu("Search");
+		JMenu menu3 = new JMenu("Manage");
 		JMenuItem menuItem11 = new JMenuItem("Add Client");
 		JMenuItem menuItem12 = new JMenuItem("Add Drug");
 		JMenuItem menuItem21 = new JMenuItem("Search Client");
 		JMenuItem menuItem22 = new JMenuItem("Search Drug");
+		JMenuItem menuItem31 = new JMenuItem("Manage Client");
+		JMenuItem menuItem32 = new JMenuItem("Manage Drug");
+
 
 		menuBar.add(menu1);
 		menuBar.add(menu2);
+		menuBar.add(menu3);
 		menu1.add(menuItem11);
 		menu1.add(menuItem12);
 		menu2.add(menuItem21);
 		menu2.add(menuItem22);
+		menu3.add(menuItem31);
+		menu3.add(menuItem32);
 
 		// Add Drug show dialog button
 		menuItem11.addActionListener(new ActionListener() {	
@@ -215,20 +230,20 @@ public class Main {
 			}
 
 		});
-		
+
 		menuItem21.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Search client button action
 				JPanel searchClientDialogPanel = new JPanel();
 				searchClientDialogPanel.setLayout( new BoxLayout(searchClientDialogPanel, BoxLayout.Y_AXIS));
-				
+
 				JTextField searchClientField = new JTextField (20);
-				
+
 				searchClientDialogPanel.add(new JLabel("Enter the social number of the CLient "));
 				searchClientDialogPanel.add(searchClientField);
-				
+
 				int result = JOptionPane.showConfirmDialog(mFrame, searchClientDialogPanel, "Provide Drug info", JOptionPane.OK_CANCEL_OPTION);
 
 				if (result == JOptionPane.OK_OPTION) {
@@ -240,16 +255,18 @@ public class Main {
 						for (Client c : clientArrayList) {
 
 							if (c.socialNb.equals(searchClientField.getText())) {
-								
-								JFrame clientInfo = new JFrame();
-								JOptionPane.showMessageDialog(clientInfo,c.clientDisplayInfos());
-								
-								//mFrame.revalidate();
-						        //mFrame.repaint();
-						        return;
 
-								
-								
+								JFrame clientInfo = new JFrame();
+								JPanel clientInfoPanel = new JPanel();
+								c.buildClientDrugPanel(c,clientInfoPanel);
+								JOptionPane.showMessageDialog(clientInfo,c.clientDisplayInfos());
+
+								//mFrame.revalidate();
+								//mFrame.repaint();
+								return;
+
+
+
 							}
 						}
 					}
@@ -267,19 +284,19 @@ public class Main {
 		});
 
 
-menuItem22.addActionListener(new ActionListener() {
-			
+		menuItem22.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Search client button action
 				JPanel searchDrugDialogPanel = new JPanel();
 				searchDrugDialogPanel.setLayout( new BoxLayout(searchDrugDialogPanel, BoxLayout.Y_AXIS));
-				
+
 				JTextField searchDrugField = new JTextField (20);
-				
+
 				searchDrugDialogPanel.add(new JLabel("Enter the reference of the drug:  "));
 				searchDrugDialogPanel.add(searchDrugField);
-				
+
 				int result = JOptionPane.showConfirmDialog(mFrame, searchDrugDialogPanel, "Provide Drug info", JOptionPane.OK_CANCEL_OPTION);
 
 				if (result == JOptionPane.OK_OPTION) {
@@ -293,13 +310,13 @@ menuItem22.addActionListener(new ActionListener() {
 							if (d.ref.equals(searchDrugField.getText())) {
 								JFrame drugInfo = new JFrame();
 								JOptionPane.showMessageDialog(drugInfo,d.drugDisplayInfos());
-																
-								
+
+
 								//mFrame.revalidate();
-						        //mFrame.repaint();
-						        return;
-								
-								
+								//mFrame.repaint();
+								return;
+
+
 							}
 						}
 					}
@@ -315,7 +332,64 @@ menuItem22.addActionListener(new ActionListener() {
 				}
 			}
 		});
+		
+		menuItem31.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Search client button action
+				JPanel manageClientDialogPanel = new JPanel();
+				manageClientDialogPanel.setLayout( new BoxLayout(manageClientDialogPanel, BoxLayout.Y_AXIS));
+				
+				JTextField selectClient = new JTextField();
+				JTextField selectDrug = new JTextField();
+				JTextField selectQuantity = new JTextField();
 
+				manageClientDialogPanel.add(new JLabel("Select the Social Number of the Client"));
+				manageClientDialogPanel.add(selectClient);
+				manageClientDialogPanel.add(Box.createHorizontalStrut(15));
+
+				manageClientDialogPanel.add(new JLabel("Select the Reference of the Drug"));
+				manageClientDialogPanel.add(selectDrug);
+				manageClientDialogPanel.add(Box.createHorizontalStrut(15));
+
+				manageClientDialogPanel.add(new JLabel("Quantity of Drug"));
+				manageClientDialogPanel.add(selectQuantity);
+				manageClientDialogPanel.add(Box.createHorizontalStrut(15));
+				
+				int result = JOptionPane.showConfirmDialog(mFrame, manageClientDialogPanel, "Manage Client Basket", JOptionPane.OK_CANCEL_OPTION);
+
+				if (result == JOptionPane.OK_OPTION) {
+
+					JOptionPane manageClientConfirm = new JOptionPane();
+					int confirmSearchDrug = manageClientConfirm.showConfirmDialog(null, "Do you want to Confirm","Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+					if (confirmSearchDrug == 0) {
+						for (Client c : clientArrayList) {
+
+							if (c.socialNb.equals(selectClient.getText())) {
+								for (Drug d : drugArrayList) {
+									if(d.getRef().equals(selectDrug.getText()) && d.getQuantity() > 0 && (d.getQuantity() - Integer.parseInt(selectQuantity.getText())>=0)) {
+										
+										int quantityBought = Integer.parseInt(selectQuantity.getText());
+										float purchasePrice = quantityBought*d.getPrice();
+										d.setQuantity(d.getQuantity() - quantityBought);
+										c.getMedicineList().add(d);
+										
+										JOptionPane purchasePane = new JOptionPane();
+										purchasePane.showMessageDialog(null,"You bought: " +quantityBought+" "+ d.getWording()
+										+" for " +purchasePrice+ " €","Information", JOptionPane.INFORMATION_MESSAGE);
+
+									}
+								}
+							}	
+						}
+						drugListPanel.revalidate();
+						drugListPanel.repaint();
+					}
+				}
+			}
+		});
 
 
 
@@ -331,4 +405,18 @@ menuItem22.addActionListener(new ActionListener() {
 	/*
 	 * Functions
 	 */
+	//	public static void buildClientDrugPanel(ArrayList<Drug> drugList, String socialToSearch, JPanel drugPanel) {
+	//
+	//		JPanel clientDrugPanel = new JPanel();
+	//		clientDrugPanel.setLayout(new BoxLayout(clientDrugPanel, BoxLayout.Y_AXIS));
+	//		clientDrugPanel.add(new JLabel("Drug List :", SwingConstants.CENTER));
+	//		
+	//		if (!drugList.isEmpty()) {
+	//		for(Drug d : drugList) {
+	//			clientDrugPanel.add(new JLabel(d.getWording() +": "+ d.getQuantity()+" units"));
+	//		}
+	//	}
+	//	drugPanel.add(clientDrugPanel);	
+	//	drugPanel.repaint();
+	//}
 }
