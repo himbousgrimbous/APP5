@@ -19,7 +19,14 @@ public class Main {
 
 		ArrayList<Client> clientArrayList = new ArrayList<>();
 		ArrayList<Drug> drugArrayList = new ArrayList<>();
-
+		
+		//Mock-up data
+		try {
+		clientArrayList.add(new Client("12345678912345","Côme","Meyer","0768980920","11 rue Claude Debussy"));
+		drugArrayList.add(new Drug("1","Aspirine","Maux de Tête",10,10));
+		} catch (Exception e) {
+		}
+		
 		// Set up Frame
 		JFrame mFrame = new JFrame("Pharmacy Management");
 		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,6 +68,7 @@ public class Main {
 		drugListPanel.add(drugPanel);
 		mFrame.getContentPane().add(BorderLayout.AFTER_LINE_ENDS, drugListPanel);
 
+		
 
 		//Creating the MenuBar and adding components
 		JMenuBar menuBar = new JMenuBar();
@@ -132,7 +140,6 @@ public class Main {
 							clientTableModel.addRow(new Object[] {newClient.socialNb, newClient.firstName, newClient.lastName});
 
 						} catch (Exception e1) {
-							// TODO Auto-generated catch block
 							new JOptionPane().showMessageDialog(null, e1.getMessage(), "Error, Social Security Number too short", JOptionPane.ERROR_MESSAGE);
 						}
 					}
@@ -226,7 +233,7 @@ public class Main {
 				
 				JTextField searchClientField = new JTextField (20);
 				
-				searchClientDialogPanel.add(new JLabel("Enter the social number of the CLient "));
+				searchClientDialogPanel.add(new JLabel("Enter the social number of the "));
 				searchClientDialogPanel.add(searchClientField);
 				
 				int result = JOptionPane.showConfirmDialog(mFrame, searchClientDialogPanel, "Provide Drug info", JOptionPane.OK_CANCEL_OPTION);
@@ -237,19 +244,40 @@ public class Main {
 					int confirmSearchClient = searchClientConfirm.showConfirmDialog(null, "Do you want to Confirm","Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 					if (confirmSearchClient == 0) {
-						for (Client c : clientArrayList) {
+						for (Client c : clientArrayList) {					
 
-							if (c.socialNb.equals(searchClientField.getText())) {
+							if (c.getSocialNb().equals(searchClientField.getText())) {
 								
 								drugListPanel.setVisible(false);
 								
-								setSearchClientPanel(clientArrayList, c , mFrame, drugListPanel);
+								JPanel clientPanel = new JPanel();
+								clientPanel.setLayout(new BoxLayout(clientPanel, BoxLayout.Y_AXIS));
+								clientPanel.add(new JLabel("Client Info :", SwingConstants.CENTER));
 								
+								JPanel clientNamePanel = new JPanel();
+								JPanel clientSocialPanel = new JPanel();
+								JPanel clientPhonePanel = new JPanel();
+								JPanel clientAddressPanel = new JPanel();
+								
+								JLabel nameLabel = new JLabel("Client fullname: "+ c.getLastName() +" "+ c.getFirstName(), SwingConstants.CENTER);
+								JLabel socialLabel = new JLabel("Client social security number: "+ c.getSocialNb(), SwingConstants.CENTER);
+								JLabel phoneLabel = new JLabel("Client phone: "+ c.getPhoneNb(), SwingConstants.CENTER);
+								JLabel addressLabel = new JLabel("Client address: "+ c.getAddress(), SwingConstants.CENTER);
+								
+								/*clientNamePanel.add(nameLabel);
+								clientSocialPanel.add(socialLabel);
+								clientPhonePanel.add(phoneLabel);
+								clientAddressPanel.add(addressLabel);
+								
+								clientPanel.add(clientNamePanel);
+								clientPanel.add(clientSocialPanel);
+								clientPanel.add(clientPhonePanel);
+								clientPanel.add(clientAddressPanel);*/
+								
+								buildClientDrugPanel(c.getMedicineList(), searchClientField.getText(), clientPanel);
+								mFrame.getContentPane().add(BorderLayout.CENTER, clientPanel);
 								mFrame.revalidate();
-						        mFrame.repaint();
-						        return;
-
-								
+								mFrame.repaint();
 								
 							}
 						}
@@ -268,59 +296,6 @@ public class Main {
 		});
 
 
-menuItem22.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Search client button action
-				JPanel searchDrugDialogPanel = new JPanel();
-				searchDrugDialogPanel.setLayout( new BoxLayout(searchDrugDialogPanel, BoxLayout.Y_AXIS));
-				
-				JTextField searchDrugField = new JTextField (20);
-				
-				searchDrugDialogPanel.add(new JLabel("Enter the reference of the drug:  "));
-				searchDrugDialogPanel.add(searchDrugField);
-				
-				int result = JOptionPane.showConfirmDialog(mFrame, searchDrugDialogPanel, "Provide Drug info", JOptionPane.OK_CANCEL_OPTION);
-
-				if (result == JOptionPane.OK_OPTION) {
-
-					JOptionPane searchDrugConfirm = new JOptionPane();
-					int confirmSearchDrug = searchDrugConfirm.showConfirmDialog(null, "Do you want to Confirm","Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-					if (confirmSearchDrug == 0) {
-						for (Drug d : drugArrayList) {
-
-							if (d.ref.equals(searchDrugField.getText())) {
-								
-								clientListPanel.setVisible(false);
-								setSearchDrugPanel(drugArrayList, d , mFrame, clientListPanel);
-								
-								
-								mFrame.revalidate();
-						        mFrame.repaint();
-						        return;
-								
-								
-							}
-						}
-					}
-
-					else if (confirmSearchDrug == 1) {
-						searchDrugConfirm.getRootFrame().dispose();
-					}
-
-					else {
-						searchDrugConfirm.getRootFrame().dispose();
-					}
-
-				}
-			}
-		});
-
-
-
-
 
 
 		//Adding elements to the main frame
@@ -333,102 +308,44 @@ menuItem22.addActionListener(new ActionListener() {
 	/*
 	 * Functions
 	 */
-	
-	public static void setSearchClientPanel(ArrayList<Client> clientArrayList, Client c , JFrame mFrame, JPanel drugListPanel) {
-		
-		if (!clientArrayList.isEmpty()) {
-			
-			JPanel searchClientPanel = new JPanel();
-			searchClientPanel.setLayout(new BoxLayout(searchClientPanel, BoxLayout.Y_AXIS));
+	public static void buildClientDrugPanel(ArrayList<Drug> drugList, String socialToSearch, JPanel drugPanel) {
 
-			JLabel searchClientTitle = new JLabel("Search Client result: \n");
-			searchClientTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-			
-			JLabel nameLabel = new JLabel("Client name: "+c.firstName+" "+ c.lastName+"\n");
-			//JLabel lnameLabel = new JLabel(c.lastName);
-			JLabel socialLabel = new JLabel("Social Security Number: "+c.socialNb+"\n");
-			JLabel phoneLabel = new JLabel("Client's Phone Number: "+c.phoneNb+"\n");
-			JLabel addrLabel = new JLabel("Client's address: "+c.address+"\n");
-			
-			
-			JButton returnButton = new JButton("Return to Menu");
-				
-			returnButton.addActionListener(new ActionListener(){
-		        
-				public void actionPerformed(ActionEvent e){
-		        	searchClientPanel.setVisible(false);
-		        	drugListPanel.setVisible(true);
-		        	}
-		        });
+			JPanel clientDrugPanel = new JPanel();
+			clientDrugPanel.add(new JLabel("Drug List :", SwingConstants.CENTER));
 
-
-			searchClientPanel.add(searchClientTitle);
-			searchClientPanel.add(nameLabel);
-			searchClientPanel.add(addrLabel);
-			searchClientPanel.add(socialLabel);
-			searchClientPanel.add(phoneLabel);
-			searchClientPanel.add(addrLabel);
-			searchClientPanel.add(returnButton);
+			DefaultTableModel clientDrugTableModel = new DefaultTableModel();
+			clientDrugTableModel.addColumn("Drug Label");
+			clientDrugTableModel.addColumn("Drug Quantity");
+			JTable clientDrugTable = new JTable(clientDrugTableModel);
+			clientDrugPanel.add(clientDrugTable);
 			
-			mFrame.add(searchClientPanel);
-			
-			searchClientPanel.setVisible(true);
-
-			searchClientPanel.repaint();
-			return;
-		}
-			
+			if (!drugList.isEmpty()) {
+			for(Drug d : drugList) {
+				clientDrugTableModel.addRow(new Object[] {d.wording, d.quantity});
 			}
-		
-
-
-
-public static void setSearchDrugPanel(ArrayList<Drug> drugArrayList, Drug d , JFrame mFrame, JPanel clientListPanel) {
-	
-	//if (!clientArrayList.isEmpty()) {
-		JPanel searchDrugPanel = new JPanel();
-		searchDrugPanel.setLayout(new BoxLayout(searchDrugPanel, BoxLayout.Y_AXIS));
-		JLabel searchDrugTitle = new JLabel("Search Drug result: \n");
-		searchDrugTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
-		
-		JLabel refLabel = new JLabel("Drug Reference: "+d.ref+"\n");
-		JLabel wordingLabel = new JLabel("Drug Label: "+d.wording+"\n");
-		JLabel descriptLabel = new JLabel("Drug Description "+d.descript+"\n");
-		JLabel quantityLabel = new JLabel("Quantity of Drug in Stock: "+d.quantity+"\n");
-		JLabel priceLabel = new JLabel("Price of the Drug: "+d.price+"\n");
-		
-		
-		JButton returnButton = new JButton("Return to Menu");
-			
-		returnButton.addActionListener(new ActionListener(){
-	        
-			public void actionPerformed(ActionEvent e){
-	        	searchDrugPanel.setVisible(false);
-	        	clientListPanel.setVisible(true);
-	        	}
-	        });
-
-
-		searchDrugPanel.add(searchDrugTitle);
-		searchDrugPanel.add(refLabel);
-		searchDrugPanel.add(wordingLabel);
-		searchDrugPanel.add(descriptLabel);
-		searchDrugPanel.add(quantityLabel);
-		searchDrugPanel.add(priceLabel);
-		searchDrugPanel.add(returnButton);
-		
-		mFrame.add(searchDrugPanel);
-		
-		searchDrugPanel.setVisible(true);
-		
-		
-		searchDrugPanel.revalidate();
-		searchDrugPanel.repaint();
-
 		}
+		drugPanel.add(clientDrugPanel);	
+		
+//		
+//		JPanel clientListPanel = new JPanel();
+//		clientListPanel.setLayout(new BoxLayout(clientListPanel, BoxLayout.Y_AXIS));
+//		JLabel clientListTitle = new JLabel("Client list");
+//		clientListTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
+//
+//		DefaultTableModel clientTableModel = new DefaultTableModel();
+//		clientTableModel.addColumn("Social Number");
+//		clientTableModel.addColumn("First Name");
+//		clientTableModel.addColumn("Last Name");
+//		JTable clientTable = new JTable(clientTableModel);          
+//		JScrollPane clientPanel = new JScrollPane(clientTable);
+//
+//		clientListPanel.add(clientListTitle);
+//		clientListPanel.add(clientPanel);	
+//		mFrame.getContentPane().add(BorderLayout.LINE_START, clientListPanel);
+	}
+		
 
-}
-
+	// Add Client
 
 	//Truc de Jeanne qui sert à rien pcq Côme l'a fait au dessus
 	//addStudentDialogPanel.add(new JLabel("Social Security number:"));
@@ -450,7 +367,4 @@ public static void setSearchDrugPanel(ArrayList<Drug> drugArrayList, Drug d , JF
 	//addStudentDialogPanel.add(new JLabel("Telephone Number:"));
 	//addStudentDialogPanel.add(TelephoneNumberField);
 	//addStudentDialogPanel.add(Box.creatHorizontalStrut(15));
-
-
-
-
+}
