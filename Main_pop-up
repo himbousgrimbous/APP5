@@ -1,5 +1,9 @@
+
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -8,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 
 import model.Drug;
 import model.Client;
+import model.BoughtDrug;
 
 public class Main {
 
@@ -22,7 +27,8 @@ public class Main {
 		
 		try {
 			clientArrayList.add(new Client("12345678912345","Côme","Meyer","0768980920","11 rue Claude Debussy"));
-			drugArrayList.add(new Drug("1","Aspirine","Maux de Tête",100,1.5f));
+			//drugArrayList.add(new Drug("1","Aspirine","Maux de Tête",100,1.5f));
+			//drugArrayList.add(new Drug("2","Doliprane","OSEF",50,1));
 			} catch (Exception e) {
 			}
 		
@@ -32,9 +38,14 @@ public class Main {
 		JFrame mFrame = new JFrame("Pharmacy Management");
 		mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mFrame.setBounds(0,0,950,600);
+		mFrame.getContentPane().setBackground(new Color(0, 198, 159));
+		
+		Image icon = Toolkit.getDefaultToolkit().getImage("pharmacie.jpg");    
+		mFrame.setIconImage(icon);  
 
 		// Client table views
 		JPanel clientListPanel = new JPanel();
+		clientListPanel.setBackground(new Color(0, 198, 159));
 		clientListPanel.setLayout(new BoxLayout(clientListPanel, BoxLayout.Y_AXIS));
 		JLabel clientListTitle = new JLabel("Client list");
 		clientListTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
@@ -43,9 +54,13 @@ public class Main {
 		clientTableModel.addColumn("Social Number");
 		clientTableModel.addColumn("First Name");
 		clientTableModel.addColumn("Last Name");
-		JTable clientTable = new JTable(clientTableModel);          
+		JTable clientTable = new JTable(clientTableModel);
+		clientTable.getTableHeader().setBackground(new Color(250, 255, 150));
+		clientTable.setOpaque(false);
+		clientTable.setFillsViewportHeight(true);
+		clientTable.setBackground(new Color(250, 255, 230));
+		
 		JScrollPane clientPanel = new JScrollPane(clientTable);
-
 		clientListPanel.add(clientListTitle);
 		clientListPanel.add(clientPanel);	
 		mFrame.getContentPane().add(BorderLayout.LINE_START, clientListPanel);
@@ -53,6 +68,7 @@ public class Main {
 
 		//drug table view
 		JPanel drugListPanel = new JPanel();
+		drugListPanel.setBackground(new Color(0, 198, 159));
 		drugListPanel.setLayout(new BoxLayout(drugListPanel, BoxLayout.Y_AXIS));
 		JLabel drugListTitle = new JLabel("Drug List");
 		drugListTitle.setAlignmentX(java.awt.Component.CENTER_ALIGNMENT);
@@ -63,8 +79,12 @@ public class Main {
 		drugTableModel.addColumn("Drug Quantity");
 		drugTableModel.addColumn("Drug Price");
 		JTable drugTable = new JTable(drugTableModel);
+		drugTable.getTableHeader().setBackground(new Color(250, 255, 150));
+		drugTable.setOpaque(false);
+		drugTable.setFillsViewportHeight(true);
+		drugTable.setBackground(new Color(250, 255, 230));
+		
 		JScrollPane drugPanel = new JScrollPane(drugTable);
-
 		drugListPanel.add(drugListTitle);
 		drugListPanel.add(drugPanel);
 		mFrame.getContentPane().add(BorderLayout.AFTER_LINE_ENDS, drugListPanel);
@@ -72,9 +92,15 @@ public class Main {
 
 		//Creating the MenuBar and adding components
 		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBackground(new Color(0, 180, 130));
 		JMenu menu1 = new JMenu("Add");
 		JMenu menu2 = new JMenu("Search");
 		JMenu menu3 = new JMenu("Manage");
+		
+		menu1.setBackground(new Color(0, 180, 130));
+		menu2.setBackground(new Color(0, 180, 130));
+		menu3.setBackground(new Color(0, 180, 130));
+		
 		JMenuItem menuItem11 = new JMenuItem("Add Client");
 		JMenuItem menuItem12 = new JMenuItem("Add Drug");
 		JMenuItem menuItem21 = new JMenuItem("Search Client");
@@ -82,7 +108,15 @@ public class Main {
 		JMenuItem menuItem31 = new JMenuItem("Manage Client");
 		JMenuItem menuItem32 = new JMenuItem("Manage Drug");
 
-
+		menuItem11.setBackground(new Color(0, 180, 130));
+		menuItem21.setBackground(new Color(0, 180, 130));
+		menuItem31.setBackground(new Color(0, 180, 130));
+		menuItem12.setBackground(new Color(0, 180, 130));
+		menuItem22.setBackground(new Color(0, 180, 130));
+		menuItem32.setBackground(new Color(0, 180, 130));
+		
+		menuItem11.setBackground(new Color(0, 180, 130));
+		
 		menuBar.add(menu1);
 		menuBar.add(menu2);
 		menuBar.add(menu3);
@@ -127,6 +161,13 @@ public class Main {
 				addClientDialogPanel.add(new JLabel("Client address:"));
 				addClientDialogPanel.add(addressField);
 				addClientDialogPanel.add(Box.createHorizontalStrut(15));
+				
+//				if(!drugArrayList.isEmpty()) {
+//					addClientDialogPanel.add(new JLabel("Drug(s) to add:"));
+//					for (Drug d : drugArrayList) {
+//						addClientDialogPanel.add(new JCheckBox(d.getWording()));
+//					}
+//				}
 
 
 				int result = JOptionPane.showConfirmDialog(mFrame, addClientDialogPanel, 
@@ -139,15 +180,14 @@ public class Main {
 					int confirmClient = addClientConfirm.showConfirmDialog(null,"Do you want to confirm?","Approval request", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 					//if YES clicked
 					if (confirmClient == 0) {
-
+						
 						try {
 							Client newClient = new Client(socialField.getText(), fnameField.getText(), lnameField.getText(), phoneField.getText(), 
 									addressField.getText());
 							clientArrayList.add(newClient);
 							clientTableModel.addRow(new Object[] {newClient.socialNb, newClient.firstName, newClient.lastName});
-
+							
 						} catch (Exception e1) {
-							// TODO Auto-generated catch block
 							new JOptionPane().showMessageDialog(null, e1.getMessage(), "Error, Social Security Number too short", JOptionPane.ERROR_MESSAGE);
 						}
 					}
@@ -241,10 +281,10 @@ public class Main {
 
 				JTextField searchClientField = new JTextField (20);
 
-				searchClientDialogPanel.add(new JLabel("Enter the social number of the CLient "));
+				searchClientDialogPanel.add(new JLabel("Enter the social number of the Client "));
 				searchClientDialogPanel.add(searchClientField);
 
-				int result = JOptionPane.showConfirmDialog(mFrame, searchClientDialogPanel, "Provide Drug info", JOptionPane.OK_CANCEL_OPTION);
+				int result = JOptionPane.showConfirmDialog(mFrame, searchClientDialogPanel, "Provide client info", JOptionPane.OK_CANCEL_OPTION);
 
 				if (result == JOptionPane.OK_OPTION) {
 
@@ -258,16 +298,14 @@ public class Main {
 
 								JFrame clientInfo = new JFrame();
 								JPanel clientInfoPanel = new JPanel();
-								c.buildClientDrugPanel(c,clientInfoPanel);
-								JOptionPane.showMessageDialog(clientInfo,c.clientDisplayInfos());
-
-								//mFrame.revalidate();
-								//mFrame.repaint();
-								return;
-
-
-
+								
+								JOptionPane.showMessageDialog(clientInfo,c.clientDisplayInfos() + c.buildClientDrugPanel(c));
 							}
+							
+//							else {
+//								JOptionPane warningNotExist = new JOptionPane();
+//								warningNotExist.showMessageDialog(null,"The Client selected does NOT exist","Warning!", JOptionPane.WARNING_MESSAGE);
+//							}
 						}
 					}
 
@@ -310,14 +348,12 @@ public class Main {
 							if (d.ref.equals(searchDrugField.getText())) {
 								JFrame drugInfo = new JFrame();
 								JOptionPane.showMessageDialog(drugInfo,d.drugDisplayInfos());
-
-
-								//mFrame.revalidate();
-								//mFrame.repaint();
-								return;
-
-
 							}
+							
+//							else {
+//								JOptionPane warningNotExist = new JOptionPane();
+//								warningNotExist.showMessageDialog(null,"The Drug selected does NOT exist","Warning!", JOptionPane.WARNING_MESSAGE);
+//							}
 						}
 					}
 
@@ -368,29 +404,112 @@ public class Main {
 						for (Client c : clientArrayList) {
 
 							if (c.socialNb.equals(selectClient.getText())) {
+								
+								int indexRow = -1;
+								
 								for (Drug d : drugArrayList) {
+									
+									indexRow++;
+									
 									if(d.getRef().equals(selectDrug.getText()) && d.getQuantity() > 0 && (d.getQuantity() - Integer.parseInt(selectQuantity.getText())>=0)) {
-										
+
 										int quantityBought = Integer.parseInt(selectQuantity.getText());
+										int finalQuantity = d.getQuantity() - quantityBought;
 										float purchasePrice = quantityBought*d.getPrice();
-										d.setQuantity(d.getQuantity() - quantityBought);
-										c.getMedicineList().add(d);
 										
+										d.setQuantity(finalQuantity);
+										c.getMedicineList().add(new BoughtDrug(d.getRef(),d.getWording(),d.getDescript() ,quantityBought ,d.getPrice()));
+										c.addTotalPrice(c, purchasePrice);
 										JOptionPane purchasePane = new JOptionPane();
 										purchasePane.showMessageDialog(null,"You bought: " +quantityBought+" "+ d.getWording()
 										+" for " +purchasePrice+ " €","Information", JOptionPane.INFORMATION_MESSAGE);
 
+										drugTableModel.setValueAt(finalQuantity,indexRow, 2);
 									}
+									
+									else if((d.getQuantity() - Integer.parseInt(selectQuantity.getText())<0)) {
+										JOptionPane warningQuantity = new JOptionPane();
+										warningQuantity.showMessageDialog(null,"The stock of the drug chosen too low","Warning!", JOptionPane.WARNING_MESSAGE);
+
+									}
+//									else if(!drugArrayList.contains(d)) {
+//										JOptionPane warningNotExist = new JOptionPane();
+//										warningNotExist.showMessageDialog(null,"The Drug selected does NOT exist","Warning!", JOptionPane.WARNING_MESSAGE);
+//									}
 								}
-							}	
+							}
+//							else {
+//								JOptionPane warningNotExist = new JOptionPane();
+//								warningNotExist.showMessageDialog(null,"The Client selected does NOT exist","Warning!", JOptionPane.WARNING_MESSAGE);
+//							}
 						}
-						drugListPanel.revalidate();
-						drugListPanel.repaint();
+						mFrame.revalidate();
+						mFrame.repaint();
 					}
 				}
 			}
 		});
 
+		
+		menuItem32.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// Search client button action
+				JPanel manageDrugDialogPanel = new JPanel();
+				manageDrugDialogPanel.setLayout( new BoxLayout(manageDrugDialogPanel, BoxLayout.Y_AXIS));
+
+				JTextField selectDrug = new JTextField();
+				JTextField selectQuantity = new JTextField();
+				
+				manageDrugDialogPanel.add(new JLabel("Select the Reference of the Drug"));
+				manageDrugDialogPanel.add(selectDrug);
+				manageDrugDialogPanel.add(Box.createHorizontalStrut(15));
+
+				manageDrugDialogPanel.add(new JLabel("Quantity of Drug to Add"));
+				manageDrugDialogPanel.add(selectQuantity);
+				manageDrugDialogPanel.add(Box.createHorizontalStrut(15));
+
+				int result = JOptionPane.showConfirmDialog(mFrame, manageDrugDialogPanel, "Provide Drug info", JOptionPane.OK_CANCEL_OPTION);
+
+				if (result == JOptionPane.OK_OPTION) {
+
+					JOptionPane manageDrugConfirm = new JOptionPane();
+					int confirmManageDrug = manageDrugConfirm.showConfirmDialog(null, "Do you want to Confirm","Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+					if (confirmManageDrug == 0) {
+						
+						int indexRow = -1;
+						
+						for (Drug d : drugArrayList) {
+							
+							indexRow++;
+							
+							if (d.ref.equals(selectDrug.getText())) {
+								int quantityToInt = d.getQuantity()+ Integer.parseInt(selectQuantity.getText());
+								d.setQuantity(quantityToInt);
+								drugTableModel.setValueAt(quantityToInt, indexRow, 2);
+							}
+//							else {
+//								JOptionPane warningNotExist = new JOptionPane();
+//								warningNotExist.showMessageDialog(null,"The Drug selected does NOT exist","Warning!", JOptionPane.WARNING_MESSAGE);
+//							}
+						}
+						mFrame.revalidate();
+						mFrame.repaint();
+					}
+
+					else if (confirmManageDrug == 1) {
+						manageDrugConfirm.getRootFrame().dispose();
+					}
+
+					else {
+						manageDrugConfirm.getRootFrame().dispose();
+					}
+
+				}
+			}
+		});
 
 
 
@@ -405,6 +524,7 @@ public class Main {
 	/*
 	 * Functions
 	 */
+	
 	//	public static void buildClientDrugPanel(ArrayList<Drug> drugList, String socialToSearch, JPanel drugPanel) {
 	//
 	//		JPanel clientDrugPanel = new JPanel();
