@@ -1,0 +1,8 @@
+package model;
+
+public class BoughtDrug extends Drug{
+
+	public BoughtDrug(String ref, String wording, String descript, int quantity, float price) {
+		super(ref, wording, descript, quantity, price);
+	}
+}
