@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Client {
 
-
+	    //Ceci est un test
 	    public String firstName;
 	    public String lastName;
 	    public String socialNb;
